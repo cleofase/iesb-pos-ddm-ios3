@@ -2,8 +2,8 @@
 //  ContactsListTableViewController.swift
 //  MyContacts
 //
-//  Created by HC5MAC09 on 09/11/17.
-//  Copyright © 2017 IESB - Instituto de Educação Superior de Brasília. All rights reserved.
+//  Created by Cleofas Pereira on 11/11/17.
+//  Copyright © 2017 Cleofas Pereira. All rights reserved.
 //
 
 import UIKit
@@ -32,11 +32,11 @@ class ContactsListTableViewController: UITableViewController {
         
         let authorizationStatus = CNContactStore.authorizationStatus(for: .contacts)
         switch authorizationStatus {
-        case .authorized: loadContacts(with: nil)
+        case .authorized: loadContacts()
         case .denied, .notDetermined:
             contactsStore.requestAccess(for: .contacts) {[unowned self] (allowAcess, error) in
                 if allowAcess {
-                    self.loadContacts(with: nil)
+                    self.loadContacts()
                 } else {
                     print("No acess granted")
                 }
@@ -53,23 +53,39 @@ class ContactsListTableViewController: UITableViewController {
         searchController.searchResultsUpdater = self
         searchController.searchBar.delegate = self
         searchController.searchBar.placeholder = "Pesquisar Contatos"
+        searchController.searchBar.scopeButtonTitles = ["Nome","Sobrenome"]
         searchController.obscuresBackgroundDuringPresentation = true
         
         self.navigationItem.searchController = searchController
         self.definesPresentationContext = true
     }
-    private func loadContacts(with criteria: String? ) {
+    private func loadContacts(with criteria: String? = nil, andScope scope: String? = nil) {
+        var scopePredicate: NSPredicate? = nil
         myContacts.removeAll()
         
         let keys: [CNKeyDescriptor] = [CNContactGivenNameKey as NSString, CNContactFamilyNameKey as NSString]
         let fetchRequest: CNContactFetchRequest = CNContactFetchRequest(keysToFetch: keys)
         if let _ = criteria, criteria != "" {
             fetchRequest.predicate = CNContact.predicateForContacts(matchingName: criteria!)
+            if let _ = scope, scope != "" {
+                switch scope! {
+                case "Nome": scopePredicate = NSPredicate(format: "givenName contains[cd] %@", criteria!)
+                case "Sobrenome": scopePredicate = NSPredicate(format: "familyName contains[cd] %@", criteria!)
+                default: break
+                }
+            }
         }
-
+        
         try? contactsStore.enumerateContacts(with: fetchRequest) { [unowned self] (contact, _) in
             self.myContacts.append(contact)
         }
+        
+        if let _ = scopePredicate {
+            self.myContacts = self.myContacts.filter {
+                scopePredicate!.evaluate(with: $0)
+            }
+        }
+        
         DispatchQueue.main.async {[unowned self] in
             self.tableView.reloadData()
         }
@@ -98,7 +114,9 @@ extension ContactsListTableViewController: CNContactViewControllerDelegate {
 
 extension ContactsListTableViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        loadContacts(with: searchController.searchBar.text)
+        let criteria = searchController.searchBar.text
+        let scope = searchController.searchBar.scopeButtonTitles![searchController.searchBar.selectedScopeButtonIndex]
+        loadContacts(with: criteria, andScope: scope)
     }
 }
 
@@ -106,4 +124,12 @@ extension ContactsListTableViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         loadContacts(with: nil)
     }
+    
+    func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+        let criteria = searchBar.text
+        let scope = searchBar.scopeButtonTitles![selectedScope]
+        loadContacts(with: criteria, andScope: scope)
+    }
+    
+
 }

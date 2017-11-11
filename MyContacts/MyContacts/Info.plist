@@ -42,6 +42,6 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>NSContactsUsageDescription</key>
-	<string>vou usar para listar</string>
+	<string>Vou usar com cuidado!</string>
 </dict>
 </plist>

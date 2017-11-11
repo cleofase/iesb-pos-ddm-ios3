@@ -2,8 +2,8 @@
 //  AppDelegate.swift
 //  MyContacts
 //
-//  Created by HC5MAC09 on 09/11/17.
-//  Copyright © 2017 IESB - Instituto de Educação Superior de Brasília. All rights reserved.
+//  Created by Cleofas Pereira on 11/11/17.
+//  Copyright © 2017 Cleofas Pereira. All rights reserved.
 //
 
 import UIKit
