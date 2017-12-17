@@ -42,18 +42,19 @@ class ViewController: UIViewController {
     }
 
     override func viewDidAppear(_ animated: Bool) {
-        let modalidadeRef = rootRef.child("produto")
-        modalidadeRef.observe(.value) {snap in
-            var produtos: [Product]?
-            let jsonDecoder = JSONDecoder()
-            produtos = try? jsonDecoder.decode([Product].self, from: snap.value as! Data)
-            guard let _ = produtos else {return}
-            for produto in produtos! {
-                print(produto.name)
-                print(produto.description)
-            }
-            
-        }
+        super.viewDidAppear(animated)
+//        let modalidadeRef = rootRef.child("produto")
+//        modalidadeRef.observe(.value) {snap in
+//            var produtos: [Product]?
+//            let jsonDecoder = JSONDecoder()
+//            produtos = try? jsonDecoder.decode([Product].self, from: snap.value as! Data)
+//            guard let _ = produtos else {return}
+//            for produto in produtos! {
+//                print(produto.name)
+//                print(produto.description)
+//            }
+//            
+//        }
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
