@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4E90B5C35AA5320C50DB3086 /* Pods_CnesApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6A01C224E2C47E9DCBB1F31 /* Pods_CnesApp.framework */; };
+		800DC1831FF422F000CEF244 /* HealthUnitDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800DC1821FF422F000CEF244 /* HealthUnitDetailViewController.swift */; };
 		805140A11FE63F33005CC96B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805140A01FE63F33005CC96B /* AppDelegate.swift */; };
 		805140A61FE63F33005CC96B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 805140A41FE63F33005CC96B /* Main.storyboard */; };
 		805140A91FE63F33005CC96B /* CnesApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 805140A71FE63F33005CC96B /* CnesApp.xcdatamodeld */; };
@@ -26,6 +27,7 @@
 
 /* Begin PBXFileReference section */
 		15DC20D721915C57981D11EE /* Pods-CnesApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CnesApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CnesApp/Pods-CnesApp.debug.xcconfig"; sourceTree = "<group>"; };
+		800DC1821FF422F000CEF244 /* HealthUnitDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthUnitDetailViewController.swift; sourceTree = "<group>"; };
 		8051409D1FE63F33005CC96B /* CnesApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CnesApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		805140A01FE63F33005CC96B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		805140A51FE63F33005CC96B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 				805140BF1FEF3204005CC96B /* EmailLogInViewController.swift */,
 				805140C61FF2E91D005CC96B /* PatientProfileViewController.swift */,
 				805140C81FF2ED78005CC96B /* EditProfileViewController.swift */,
+				800DC1821FF422F000CEF244 /* HealthUnitDetailViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -284,6 +287,7 @@
 				805140C01FEF3204005CC96B /* EmailLogInViewController.swift in Sources */,
 				805140A91FE63F33005CC96B /* CnesApp.xcdatamodeld in Sources */,
 				805140C91FF2ED78005CC96B /* EditProfileViewController.swift in Sources */,
+				800DC1831FF422F000CEF244 /* HealthUnitDetailViewController.swift in Sources */,
 				805140BC1FEEAEAA005CC96B /* EmailSignUpViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

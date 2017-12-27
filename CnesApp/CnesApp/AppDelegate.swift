@@ -27,6 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.window?.rootViewController = initialLogedViewController
             self.window?.makeKeyAndVisible()
         }
+        
         return true
     }
 

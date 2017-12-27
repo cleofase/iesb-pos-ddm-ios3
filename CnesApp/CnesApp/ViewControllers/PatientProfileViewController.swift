@@ -19,6 +19,7 @@ class PatientProfileViewController: UIViewController {
     }
     
     private var containter: NSPersistentContainer? = AppDelegate.persistentContainer
+    private var handle: AuthStateDidChangeListenerHandle?
     
     @IBOutlet weak var patientNameLabel: UILabel!
     @IBOutlet weak var patientProfilePictureImage: UIImageView! {
@@ -28,9 +29,25 @@ class PatientProfileViewController: UIViewController {
         }
     }
     
-    @IBAction func editProfileButton(_ sender: UIButton) {
+    @IBAction func profileOptionsButton(_ sender: UIButton) {
         guard let _ = patient else {return}
-        performSegue(withIdentifier: "editProfileSegue", sender: self)
+        
+        let profileOptionsAlert = UIAlertController(title: "Profile options", message: "Choice the desired action to your profile.", preferredStyle: .actionSheet)
+        profileOptionsAlert.addAction(UIAlertAction(title: "Edit Profile", style: .default, handler: {[unowned self](_) in
+            self.performSegue(withIdentifier: "editProfileSegue", sender: self)
+        }))
+        profileOptionsAlert.addAction(UIAlertAction(title: "Log Out", style: .default, handler: {[unowned self](_) in
+            do {
+                try Auth.auth().signOut()
+            } catch {
+                let signOutErrorAlert = UIAlertController(title: "Sign Out", message: "\(error.localizedDescription) Please try again later.", preferredStyle: .alert)
+                signOutErrorAlert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+                self.present(signOutErrorAlert, animated: true, completion: nil)
+            }
+        }))
+        profileOptionsAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        present(profileOptionsAlert, animated: true, completion: nil)
+        
     }
     
     override func viewDidLoad() {
@@ -46,6 +63,21 @@ class PatientProfileViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        handle = Auth.auth().addStateDidChangeListener({(auth, user) in
+            if let _ = user {} else {
+                let mainStoryBorad = UIStoryboard(name: "Main", bundle: nil)
+                let initialViewController = mainStoryBorad.instantiateInitialViewController()
+                UIApplication.shared.keyWindow?.rootViewController = initialViewController
+            }
+        })
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        Auth.auth().removeStateDidChangeListener(handle!)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
