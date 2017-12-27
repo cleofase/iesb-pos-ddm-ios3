@@ -7,12 +7,14 @@
 //
 
 import UIKit
+import CoreData
 import FirebaseCore
 import FirebaseAuth
 
 
 class EmailLogInViewController: UIViewController {
     private var stackViewBottomConstant: CGFloat?
+    private var container: NSPersistentContainer? = AppDelegate.persistentContainer
     
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var userEmailText: UITextField! {didSet{userEmailText.delegate = self}}
@@ -59,6 +61,20 @@ class EmailLogInViewController: UIViewController {
                 self.present(logInErrorAlert, animated: true, completion: nil)
             } else {
                 if user!.isEmailVerified {
+                    // salvar usuário no CoreData
+                    DispatchQueue.main.async {[weak self] in
+                        if let context = self?.container?.viewContext {
+                            do {
+                                if try Patient.find(matching: user!.uid, in: context) == nil {
+                                    _ = try Patient.create(with: user!, in: context)
+                                    try context.save()
+                                }
+                            } catch {
+                                print(error.localizedDescription)
+                            }
+                        }
+                    }
+                    
                     self.performSegue(withIdentifier: "logedInSegue", sender: self)
                     Auth.auth().currentUser?.getIDToken() { (token, error) in
                         if error == nil {

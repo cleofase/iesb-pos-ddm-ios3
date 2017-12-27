@@ -320,10 +320,10 @@
             </objects>
             <point key="canvasLocation" x="2622" y="-340"/>
         </scene>
-        <!--View Controller-->
+        <!--Patient Profile View Controller-->
         <scene sceneID="TsE-8s-VBY">
             <objects>
-                <viewController id="QU1-EP-xNX" sceneMemberID="viewController">
+                <viewController id="QU1-EP-xNX" customClass="PatientProfileViewController" customModule="CnesApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="mca-oY-i5B">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -367,6 +367,9 @@
                                         <state key="normal" title="Edit Profile">
                                             <color key="titleColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         </state>
+                                        <connections>
+                                            <action selector="editProfileButton:" destination="QU1-EP-xNX" eventType="touchUpInside" id="kSK-dx-hig"/>
+                                        </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sbs-q1-DHp">
                                         <rect key="frame" x="16" y="109" width="343" height="21"/>
@@ -419,10 +422,132 @@
                         <viewLayoutGuide key="safeArea" id="6Qn-ma-yas"/>
                     </view>
                     <navigationItem key="navigationItem" id="6jk-1d-FPE"/>
+                    <connections>
+                        <outlet property="patientNameLabel" destination="Sbs-q1-DHp" id="cXa-wc-P8j"/>
+                        <outlet property="patientProfilePictureImage" destination="Tlc-qf-kdf" id="o24-Sm-yAN"/>
+                        <segue destination="SfP-6i-tly" kind="presentation" identifier="editProfileSegue" id="YDq-5u-X2C"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6FR-QN-DBv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2621.5999999999999" y="1333.5832083958021"/>
+        </scene>
+        <!--Edit Profile-->
+        <scene sceneID="okN-uk-6rA">
+            <objects>
+                <viewController id="npb-m2-myD" customClass="EditProfileViewController" customModule="CnesApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="RG3-qs-MA9">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView alpha="0.5" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nbC-qH-HvK">
+                                <rect key="frame" x="142" y="80" width="90" height="90"/>
+                                <color key="backgroundColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="90" id="Io0-Rb-fTa"/>
+                                    <constraint firstAttribute="height" constant="90" id="Rad-Ra-Yer"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fUW-8h-w5v">
+                                <rect key="frame" x="142" y="178" width="90" height="30"/>
+                                <state key="normal" title="Edit Photo">
+                                    <color key="titleColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="editProfilePhotoButton:" destination="npb-m2-myD" eventType="touchUpInside" id="Sum-Em-vvb"/>
+                                </connections>
+                            </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Hrj-f8-JoG">
+                                <rect key="frame" x="16" y="224" width="343" height="191.5"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="N53-Vm-CaN">
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" alpha="0.5" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="DaY-1l-Gmq">
+                                        <rect key="frame" x="0.0" y="28.5" width="343" height="30"/>
+                                        <color key="textColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <textInputTraits key="textInputTraits" textContentType="name"/>
+                                    </textField>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Email" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vPR-kB-zei">
+                                        <rect key="frame" x="0.0" y="66.5" width="343" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" alpha="0.5" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="A7f-lB-mU8">
+                                        <rect key="frame" x="0.0" y="95" width="343" height="30"/>
+                                        <color key="textColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <textInputTraits key="textInputTraits" keyboardType="emailAddress" textContentType="email"/>
+                                    </textField>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Phone Number" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w3y-QQ-9Hr">
+                                        <rect key="frame" x="0.0" y="133" width="343" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" alpha="0.5" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="aIl-t7-QfO">
+                                        <rect key="frame" x="0.0" y="161.5" width="343" height="30"/>
+                                        <color key="textColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <textInputTraits key="textInputTraits" keyboardType="phonePad" textContentType="tel"/>
+                                    </textField>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="A7f-lB-mU8" secondAttribute="trailing" id="Del-vd-Aip"/>
+                                    <constraint firstItem="DaY-1l-Gmq" firstAttribute="leading" secondItem="Hrj-f8-JoG" secondAttribute="leading" id="XLq-Xy-9YB"/>
+                                    <constraint firstItem="vPR-kB-zei" firstAttribute="leading" secondItem="Hrj-f8-JoG" secondAttribute="leading" id="bFS-WM-tVr"/>
+                                    <constraint firstItem="w3y-QQ-9Hr" firstAttribute="leading" secondItem="Hrj-f8-JoG" secondAttribute="leading" id="cvd-eX-m00"/>
+                                    <constraint firstItem="N53-Vm-CaN" firstAttribute="leading" secondItem="Hrj-f8-JoG" secondAttribute="leading" id="ejz-0a-33u"/>
+                                    <constraint firstAttribute="trailing" secondItem="DaY-1l-Gmq" secondAttribute="trailing" id="hkt-92-oLy"/>
+                                    <constraint firstAttribute="trailing" secondItem="aIl-t7-QfO" secondAttribute="trailing" id="mVc-9P-GS5"/>
+                                    <constraint firstAttribute="trailing" secondItem="N53-Vm-CaN" secondAttribute="trailing" id="r6K-Js-SoW"/>
+                                    <constraint firstAttribute="trailing" secondItem="vPR-kB-zei" secondAttribute="trailing" id="r7Q-4V-tiw"/>
+                                    <constraint firstItem="aIl-t7-QfO" firstAttribute="leading" secondItem="Hrj-f8-JoG" secondAttribute="leading" id="tFh-st-qYf"/>
+                                    <constraint firstItem="A7f-lB-mU8" firstAttribute="leading" secondItem="Hrj-f8-JoG" secondAttribute="leading" id="wdU-qV-zAJ"/>
+                                    <constraint firstAttribute="trailing" secondItem="w3y-QQ-9Hr" secondAttribute="trailing" id="zA5-dg-cF4"/>
+                                </constraints>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.45085787770000002" green="0.98829740290000001" blue="0.83763033149999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="nbC-qH-HvK" firstAttribute="centerX" secondItem="RG3-qs-MA9" secondAttribute="centerX" id="7gN-Bs-8QN"/>
+                            <constraint firstItem="Hrj-f8-JoG" firstAttribute="top" secondItem="fUW-8h-w5v" secondAttribute="bottom" constant="16" id="9jl-Qm-U37"/>
+                            <constraint firstItem="fUW-8h-w5v" firstAttribute="width" secondItem="nbC-qH-HvK" secondAttribute="width" id="J4k-NF-shE"/>
+                            <constraint firstItem="fUW-8h-w5v" firstAttribute="leading" secondItem="nbC-qH-HvK" secondAttribute="leading" id="J9w-ur-FNU"/>
+                            <constraint firstItem="nbC-qH-HvK" firstAttribute="top" secondItem="DYR-1w-BQ8" secondAttribute="top" constant="16" id="KCk-Dh-flD"/>
+                            <constraint firstItem="Hrj-f8-JoG" firstAttribute="leading" secondItem="DYR-1w-BQ8" secondAttribute="leading" constant="16" id="R3U-1j-LG9"/>
+                            <constraint firstItem="DYR-1w-BQ8" firstAttribute="trailing" secondItem="Hrj-f8-JoG" secondAttribute="trailing" constant="16" id="VeO-vO-Ri3"/>
+                            <constraint firstItem="fUW-8h-w5v" firstAttribute="top" secondItem="nbC-qH-HvK" secondAttribute="bottom" constant="8" id="Zx6-jk-mNe"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="DYR-1w-BQ8"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Edit Profile" id="3qe-Bj-IEU">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="FHc-kM-UuZ">
+                            <connections>
+                                <action selector="cancelEditProfileButton:" destination="npb-m2-myD" id="9X1-YF-d8c"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="mtE-UA-7NQ">
+                            <connections>
+                                <action selector="saveEditProfileButton:" destination="npb-m2-myD" id="ppa-4K-Fx7"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="patientEmailText" destination="A7f-lB-mU8" id="f25-YT-CTP"/>
+                        <outlet property="patientNameText" destination="DaY-1l-Gmq" id="8Ew-y2-WEu"/>
+                        <outlet property="patientPhoneText" destination="aIl-t7-QfO" id="A0Q-3M-2tf"/>
+                        <outlet property="patientProfilePhotoImage" destination="nbC-qH-HvK" id="dy8-c1-qxF"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="lZp-S7-dql" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4504.8000000000002" y="1332.6836581709147"/>
         </scene>
         <!--Scanner-->
         <scene sceneID="te3-DP-Mkl">
@@ -505,6 +630,27 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mT6-cc-nlh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1604" y="1334"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="ZbW-id-gDD">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="SfP-6i-tly" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="ApO-jp-tvp">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        </textAttributes>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="npb-m2-myD" kind="relationship" relationship="rootViewController" id="fiE-ki-JrZ"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Wzb-78-5uJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3636.8000000000002" y="1333.1334332833585"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>

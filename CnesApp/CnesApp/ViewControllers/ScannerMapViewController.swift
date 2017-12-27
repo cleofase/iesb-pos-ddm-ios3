@@ -60,30 +60,50 @@ class ScannerMapViewController: UIViewController {
     }
     
     private func plotHealthUnitsInMap() {
-        let oldAnnotations = scannerMap.annotations.filter({(annotation) in return annotation.isKind(of: MKPointAnnotation.self)})
+        let oldAnnotations = scannerMap.annotations.filter({(annotation) in return annotation.isKind(of: HealthUnitAnnotation.self)})
         scannerMap.removeAnnotations(oldAnnotations)
         
         for healthUnit in healthUnits {
-            let annotation = MKPointAnnotation()
-            annotation.title = healthUnit.nomeFantasia
-            annotation.coordinate = CLLocationCoordinate2DMake(healthUnit.lat!, healthUnit.long!)
+            let annotation = HealthUnitAnnotation(with: healthUnit)
             scannerMap.addAnnotation(annotation)
         }
         
     }
-    
-    
 }
 
 extension ScannerMapViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        //
+        let reuseId = "reuseHealthUnitAnnotationView"
+        let annotationView: MKMarkerAnnotationView
+        
+        if let annotation = annotation as? HealthUnitAnnotation {
+            if let reusableView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKMarkerAnnotationView {
+                annotationView = reusableView
+                annotationView.annotation = annotation
+            } else {
+                annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+                annotationView.canShowCallout = true
+                annotationView.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+            }
+            return annotationView
+        } else {
+            if let annotation = annotation as? MKClusterAnnotation {
+                print(annotation.memberAnnotations.count)
+            }
+        }
+        
+        
         return nil
+        
     }
     
-    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationViewDragState, fromOldState oldState: MKAnnotationViewDragState) {
-        //
-    }
+//    func mapView(_ mapView: MKMapView, clusterAnnotationForMemberAnnotations memberAnnotations: [MKAnnotation]) -> MKClusterAnnotation {
+//        <#code#>
+//    }
+//    
+//    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+//        <#code#>
+//    }
 }
 
 extension ScannerMapViewController: CLLocationManagerDelegate {

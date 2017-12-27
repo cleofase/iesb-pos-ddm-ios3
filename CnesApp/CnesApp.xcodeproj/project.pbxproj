@@ -18,6 +18,10 @@
 		805140BC1FEEAEAA005CC96B /* EmailSignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805140BB1FEEAEAA005CC96B /* EmailSignUpViewController.swift */; };
 		805140BE1FEF1753005CC96B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 805140BD1FEF1753005CC96B /* GoogleService-Info.plist */; };
 		805140C01FEF3204005CC96B /* EmailLogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805140BF1FEF3204005CC96B /* EmailLogInViewController.swift */; };
+		805140C31FF27CE9005CC96B /* HealthUnitAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805140C21FF27CE9005CC96B /* HealthUnitAnnotation.swift */; };
+		805140C51FF2DF74005CC96B /* Patient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805140C41FF2DF74005CC96B /* Patient.swift */; };
+		805140C71FF2E91D005CC96B /* PatientProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805140C61FF2E91D005CC96B /* PatientProfileViewController.swift */; };
+		805140C91FF2ED78005CC96B /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805140C81FF2ED78005CC96B /* EditProfileViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +38,10 @@
 		805140BB1FEEAEAA005CC96B /* EmailSignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailSignUpViewController.swift; sourceTree = "<group>"; };
 		805140BD1FEF1753005CC96B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		805140BF1FEF3204005CC96B /* EmailLogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailLogInViewController.swift; sourceTree = "<group>"; };
+		805140C21FF27CE9005CC96B /* HealthUnitAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthUnitAnnotation.swift; sourceTree = "<group>"; };
+		805140C41FF2DF74005CC96B /* Patient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patient.swift; sourceTree = "<group>"; };
+		805140C61FF2E91D005CC96B /* PatientProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientProfileViewController.swift; sourceTree = "<group>"; };
+		805140C81FF2ED78005CC96B /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 		B6A01C224E2C47E9DCBB1F31 /* Pods_CnesApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CnesApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDAE2693276B57EEF8D9D584 /* Pods-CnesApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CnesApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-CnesApp/Pods-CnesApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -88,6 +96,7 @@
 		8051409F1FE63F33005CC96B /* CnesApp */ = {
 			isa = PBXGroup;
 			children = (
+				805140C11FF27A6A005CC96B /* Views */,
 				805140B81FE6C0E3005CC96B /* Models */,
 				805140B51FE6451F005CC96B /* ViewControllers */,
 				805140A01FE63F33005CC96B /* AppDelegate.swift */,
@@ -107,6 +116,8 @@
 				805140B61FE69559005CC96B /* ScannerMapViewController.swift */,
 				805140BB1FEEAEAA005CC96B /* EmailSignUpViewController.swift */,
 				805140BF1FEF3204005CC96B /* EmailLogInViewController.swift */,
+				805140C61FF2E91D005CC96B /* PatientProfileViewController.swift */,
+				805140C81FF2ED78005CC96B /* EditProfileViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -115,8 +126,17 @@
 			isa = PBXGroup;
 			children = (
 				805140B91FE6C145005CC96B /* AppCivico.swift */,
+				805140C41FF2DF74005CC96B /* Patient.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		805140C11FF27A6A005CC96B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				805140C21FF27CE9005CC96B /* HealthUnitAnnotation.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -258,8 +278,12 @@
 				805140BA1FE6C145005CC96B /* AppCivico.swift in Sources */,
 				805140A11FE63F33005CC96B /* AppDelegate.swift in Sources */,
 				805140B71FE69559005CC96B /* ScannerMapViewController.swift in Sources */,
+				805140C31FF27CE9005CC96B /* HealthUnitAnnotation.swift in Sources */,
+				805140C71FF2E91D005CC96B /* PatientProfileViewController.swift in Sources */,
+				805140C51FF2DF74005CC96B /* Patient.swift in Sources */,
 				805140C01FEF3204005CC96B /* EmailLogInViewController.swift in Sources */,
 				805140A91FE63F33005CC96B /* CnesApp.xcdatamodeld in Sources */,
+				805140C91FF2ED78005CC96B /* EditProfileViewController.swift in Sources */,
 				805140BC1FEEAEAA005CC96B /* EmailSignUpViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
