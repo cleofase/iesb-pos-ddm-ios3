@@ -59,8 +59,21 @@ struct HealthUnit: Codable {
     var lat: Double?
     var long: Double?
     
+    func dictionaryValue() -> [String: Array<String>] {
+        var dicHealthUnit = [String: Array<String>]()
+        dicHealthUnit.updateValue([telefone ?? ""], forKey: "Telefone")
+        dicHealthUnit.updateValue([turnoAtendimento ?? ""], forKey: "Turno de Atendimento")
+        dicHealthUnit.updateValue([logradouro ?? "", numero ?? "", bairro ?? "", cidade ?? "", uf ?? "", cep ?? ""], forKey: "Endereço")
+        dicHealthUnit.updateValue([categoriaUnidade ?? ""], forKey: "Categoria")
+        return dicHealthUnit
+    }
+    
     func annotationColor() -> UIColor {
-        if let _ = temAtendimentoUrgencia, temAtendimentoUrgencia! == "Sim" {return .red}
-        return .cyan
+        if let _ = temAtendimentoUrgencia {
+            if  temAtendimentoUrgencia! == "Sim" {
+                return .red
+            }
+        }
+        return .blue
     }
 }

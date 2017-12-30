@@ -52,4 +52,12 @@ class Patient: NSManagedObject {
             throw error
         }
     }
+    
+    func dictionaryValue() -> [String: Any] {
+        return [
+            "name": self.name ?? "",
+            "email": self.email ?? "",
+            "patientId": self.patientId ?? ""
+        ]
+    }
 }

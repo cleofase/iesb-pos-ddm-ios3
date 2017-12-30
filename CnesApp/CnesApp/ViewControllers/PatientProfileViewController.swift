@@ -22,6 +22,10 @@ class PatientProfileViewController: UIViewController {
     private var handle: AuthStateDidChangeListenerHandle?
     
     @IBOutlet weak var patientNameLabel: UILabel!
+    @IBOutlet weak var patientEmailLabel: UILabel!
+    @IBOutlet weak var patientCheckInLabel: UILabel!
+    
+    
     @IBOutlet weak var patientProfilePictureImage: UIImageView! {
         didSet {
             patientProfilePictureImage.layer.cornerRadius = 10
@@ -29,7 +33,7 @@ class PatientProfileViewController: UIViewController {
         }
     }
     
-    @IBAction func profileOptionsButton(_ sender: UIButton) {
+    @IBAction func profileOptionsButton(_ sender: UIBarButtonItem) {
         guard let _ = patient else {return}
         
         let profileOptionsAlert = UIAlertController(title: "Profile options", message: "Choice the desired action to your profile.", preferredStyle: .actionSheet)
@@ -92,6 +96,7 @@ class PatientProfileViewController: UIViewController {
         guard let _ = patient else {return}
         
         patientNameLabel.text = patient!.name
+        patientEmailLabel.text = patient!.email
         if let imageData = patient!.profilePicture, let image = UIImage(data: imageData) {
             patientProfilePictureImage.image = image
         }

@@ -75,12 +75,12 @@ class EmailLogInViewController: UIViewController {
                         }
                     }
                     
-                    self.performSegue(withIdentifier: "logedInSegue", sender: self)
                     Auth.auth().currentUser?.getIDToken() { (token, error) in
                         if error == nil {
                             UserDefaults.standard.setValue(token, forKey: "userToken")
                         }
                     }
+                    self.dismiss(animated: true, completion: nil)
                 } else {
                     let emailNotVerifiedAlert = UIAlertController(title: "Log In", message: "Your email is pending verification. Please check your email and verify your account.", preferredStyle: .alert)
                     emailNotVerifiedAlert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))

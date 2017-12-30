@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if let _ = Auth.auth().currentUser {
             let mainStoryBorad = UIStoryboard(name: "Main", bundle: nil)
-            let initialLogedViewController = mainStoryBorad.instantiateViewController(withIdentifier: "initialLogedNavigationController")
+            let initialLogedViewController = mainStoryBorad.instantiateViewController(withIdentifier: "mainLogedTabBarController")
             self.window = UIWindow(frame: UIScreen.main.bounds)
             self.window?.rootViewController = initialLogedViewController
             self.window?.makeKeyAndVisible()

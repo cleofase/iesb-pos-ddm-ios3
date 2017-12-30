@@ -17,22 +17,55 @@ class ScannerMapViewController: UIViewController {
     var healthUnits = [HealthUnit]()
     
     private var locationManager = CLLocationManager()
+    private var pulseActivityIndicator = PulseActivityIndicator()
+    private var firstUpdateUserLocation: Bool = true
     
-
+    @IBAction func modeMapSegmentedControl(_ sender: UISegmentedControl) {
+        guard let _ = scannerMap else {return}
+        
+        if let modeMap = sender.titleForSegment(at: sender.selectedSegmentIndex) {
+            switch modeMap  {
+            case "Hybrid":
+                scannerMap.mapType = .hybrid
+            case "Satellite":
+                scannerMap.mapType = .satellite
+            default:
+                scannerMap.mapType = .standard
+            }
+        }
+    }
+    @IBAction func setUserLocationCameraButton(_ sender: UIBarButtonItem) {
+        guard let _ = baseLocation else {return}
+        guard let _ = scannerMap else {return}
+        
+        let scannerCamera = MKMapCamera(lookingAtCenter: baseLocation!.coordinate, fromDistance: 1000, pitch: 0, heading: 0)
+        scannerMap.setCamera(scannerCamera, animated: true)
+    }
+    @IBOutlet weak var setUserLocationCamera: UIBarButtonItem! {
+        didSet {
+            setUserLocationCamera.isEnabled = false
+        }
+    }
     @IBOutlet weak var scannerMap: MKMapView! {
         didSet {
             scannerMap.delegate = self
-            scannerMap.showsUserLocation = true
+            scannerMap.showsUserLocation = false
         }
     }
     
     override func viewDidLoad() {
         locationManager.requestWhenInUseAuthorization()
         locationManager.delegate = self
+        firstUpdateUserLocation = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {locationManager.startUpdatingLocation()}
+        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
+            locationManager.startUpdatingLocation()
+            if firstUpdateUserLocation {
+                pulseActivityIndicator.show(at: scannerMap)
+            }
+        }
     }
     
     private func getHealthUnitsAroundMe() {
@@ -40,20 +73,24 @@ class ScannerMapViewController: UIViewController {
         let appCivico = AppCivico()
         let url = appCivico.healthUnitsUrl(AtLatitude: baseLocation!.coordinate.latitude.description, AndLogitude: baseLocation!.coordinate.longitude.description, UnderRadius: "1000")
         let dataTask = URLSession.shared.dataTask(with: url ) {[weak self] (data, response, error) in
+            guard let _ = self else {return}
             if error == nil {
                 guard let _ = data else {return}
-                guard let _ = self else {return}
                 
                 let dataDecoder = JSONDecoder()
                 do {
                     let newHealthUnits = try dataDecoder.decode([HealthUnit].self, from: data!)
                     self!.healthUnits.removeAll()
                     self!.healthUnits.append(contentsOf: newHealthUnits)
+                    self!.pulseActivityIndicator.hide()
                     self!.plotHealthUnitsInMap()
                 }catch {
                     print(error.localizedDescription)
                 }
-            } else {print(error.debugDescription)}
+            } else {
+                print(error.debugDescription)
+                self!.getHealthUnitsAroundMe()
+            }
         }
         dataTask.resume()
     }
@@ -93,6 +130,7 @@ extension ScannerMapViewController: MKMapViewDelegate {
                 annotationView.annotation = annotation
             } else {
                 annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+                annotationView.markerTintColor = annotation.healthUnit.annotationColor()
                 annotationView.canShowCallout = true
                 annotationView.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
             }
@@ -102,29 +140,37 @@ extension ScannerMapViewController: MKMapViewDelegate {
                 print(annotation.memberAnnotations.count)
             }
         }
-        
-        
         return nil
-        
     }
     
-//    func mapView(_ mapView: MKMapView, clusterAnnotationForMemberAnnotations memberAnnotations: [MKAnnotation]) -> MKClusterAnnotation {
-//        <#code#>
-//    }
-
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         performSegue(withIdentifier: "healthUnitDetailSegue", sender: view)
+    }
+    
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        print("*** A região mudou!!! ***")
     }
 }
 
 extension ScannerMapViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
-            locationManager.stopUpdatingLocation()
-            let scannerCamera = MKMapCamera(lookingAtCenter: locations.last!.coordinate, fromDistance: 1000, pitch: 0, heading: 0)
-            scannerMap.setCamera(scannerCamera, animated: true)
+            print("*** Regiões atualizadas... ***")
             baseLocation = locations.last
-            getHealthUnitsAroundMe()
+            if firstUpdateUserLocation {
+                firstUpdateUserLocation = false
+                let scannerCamera = MKMapCamera(lookingAtCenter: baseLocation!.coordinate, fromDistance: 1000, pitch: 0, heading: 0)
+                scannerMap.setCamera(scannerCamera, animated: true)
+                scannerMap.showsUserLocation = true
+                setUserLocationCamera.isEnabled = true
+                getHealthUnitsAroundMe()
+            }
         }
     }
+    
+    func locationManagerDidResumeLocationUpdates(_ manager: CLLocationManager) {
+        print("*** Vai começar a atualização!!! ***")
+        firstUpdateUserLocation = true
+    }
+    
 }

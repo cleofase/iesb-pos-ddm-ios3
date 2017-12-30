@@ -86,9 +86,7 @@ class EditProfileViewController: UIViewController {
             saveErrorAlert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         }
         print(patient!.name!)
-        firebaseDatabaseReference.child("patients").child(patient!.patientId!).setValue(["fullName":patient!.name!])
-        firebaseDatabaseReference.child("patients").child(patient!.patientId!).setValue(["email":patient!.email!])
-        
+        firebaseDatabaseReference.child("patients").child(patient!.patientId!).setValue(patient!.dictionaryValue())
         self.dismiss(animated: true, completion: nil)
     }
     

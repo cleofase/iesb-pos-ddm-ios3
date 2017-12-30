@@ -10,12 +10,29 @@ import UIKit
 import MapKit
 
 class HealthUnitDetailViewController: UIViewController {
-    var healthUnit: HealthUnit?
+    var healthUnit: HealthUnit? {
+        didSet {
+            if let _ = healthUnit {
+                healthUnitDictionary = healthUnit!.dictionaryValue()
+            }
+        }
+    }
+    private var healthUnitDictionary: [String: Array<String>]?
     
     
-    @IBOutlet weak var healthUnitMap: MKMapView!
+    @IBOutlet weak var healthUnitMap: MKMapView! {
+        didSet {
+            healthUnitMap.mapType = .satellite
+        }
+    }
     @IBOutlet weak var healthUnitNameLabel: UILabel!
     @IBOutlet weak var healthUnitDescriptionLabel: UILabel!
+    @IBOutlet weak var healthUnitDetailTable: UITableView! {
+        didSet {
+            healthUnitDetailTable.dataSource = self
+        }
+    }
+    
     @IBAction func closeHealthUnitDetailButton(_ sender: UIBarButtonItem) {
         dismiss(animated: true, completion: nil)
     }
@@ -41,4 +58,30 @@ class HealthUnitDetailViewController: UIViewController {
         healthUnitMap.setCamera(camera, animated: true)
         healthUnitMap.addAnnotation(annotation)
     }
+}
+
+extension HealthUnitDetailViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        let dictionaryKeys = [String](healthUnitDictionary!.keys)
+        return dictionaryKeys.count
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let dictionaryKeys = [String](healthUnitDictionary!.keys)
+        let arrayValue = healthUnitDictionary![dictionaryKeys[section]]
+        return arrayValue?.count ?? 0
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseHealthUnitDetailCell", for: indexPath)
+        let dictionaryKeys = [String](healthUnitDictionary!.keys)
+        let arrayValue = healthUnitDictionary![dictionaryKeys[indexPath.section]]
+        cell.textLabel?.text = arrayValue![indexPath.row]
+        return cell
+    }
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let dictionaryKeys = [String](healthUnitDictionary!.keys)
+        return dictionaryKeys[section]
+    }
+    
 }
