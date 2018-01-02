@@ -353,7 +353,7 @@
                                 </constraints>
                             </mapView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="te2-C4-9UA">
-                                <rect key="frame" x="0.0" y="256.5" width="343" height="18"/>
+                                <rect key="frame" x="16" y="256.5" width="343" height="18"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <color key="textColor" name="red_dark"/>
                                 <nil key="highlightedColor"/>
@@ -385,7 +385,7 @@
                                 <sections/>
                             </tableView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="23X-GP-g2M">
-                                <rect key="frame" x="0.0" y="222" width="343" height="26.5"/>
+                                <rect key="frame" x="16" y="222" width="343" height="26.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="22"/>
                                 <color key="textColor" name="red_dark"/>
                                 <nil key="highlightedColor"/>
@@ -835,9 +835,6 @@
         </namedColor>
         <namedColor name="green_light">
             <color red="0.84313725490196079" green="0.95686274509803926" blue="0.93333333333333335" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
-        <namedColor name="green_regular">
-            <color red="0.52941176470588236" green="0.87058823529411766" blue="0.80392156862745101" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="green_regular">
             <color red="0.52941176470588236" green="0.87058823529411766" blue="0.80392156862745101" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
