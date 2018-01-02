@@ -36,6 +36,7 @@ class HealthUnitDetailViewController: UIViewController {
     @IBAction func closeHealthUnitDetailButton(_ sender: UIBarButtonItem) {
         dismiss(animated: true, completion: nil)
     }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 

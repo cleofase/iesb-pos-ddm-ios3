@@ -8,17 +8,21 @@
 
 import UIKit
 import MapKit
+import CoreData
 import CoreLocation
 import FirebaseCore
 import FirebaseAuth
+import UserNotifications
 
 class ScannerMapViewController: UIViewController {
     var baseLocation: CLLocation?
     var healthUnits = [HealthUnit]()
     
+    private var containter: NSPersistentContainer? = AppDelegate.persistentContainer
     private var locationManager = CLLocationManager()
     private var pulseActivityIndicator = PulseActivityIndicator()
-    private var firstUpdateUserLocation: Bool = true
+    private var pendingUpdateUnitsAround: Bool = true
+    private var handle: AuthStateDidChangeListenerHandle?
     
     @IBAction func modeMapSegmentedControl(_ sender: UISegmentedControl) {
         guard let _ = scannerMap else {return}
@@ -49,64 +53,42 @@ class ScannerMapViewController: UIViewController {
     @IBOutlet weak var scannerMap: MKMapView! {
         didSet {
             scannerMap.delegate = self
-            scannerMap.showsUserLocation = false
+            scannerMap.showsUserLocation = true
         }
     }
     
     override func viewDidLoad() {
+        super.viewDidLoad()
         locationManager.requestWhenInUseAuthorization()
         locationManager.delegate = self
-        firstUpdateUserLocation = true
+        pendingUpdateUnitsAround = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        handle = Auth.auth().addStateDidChangeListener({(auth, user) in
+            if let _ = user {} else {
+                let mainStoryBorad = UIStoryboard(name: "Main", bundle: nil)
+                let initialViewController = mainStoryBorad.instantiateInitialViewController()
+                UIApplication.shared.keyWindow?.rootViewController = initialViewController
+            }
+        })
+        
+        locationManager.startUpdatingLocation()
+
         if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
-            locationManager.startUpdatingLocation()
-            if firstUpdateUserLocation {
+            if pendingUpdateUnitsAround {
                 pulseActivityIndicator.show(at: scannerMap)
             }
         }
     }
     
-    private func getHealthUnitsAroundMe() {
-        guard let _ = baseLocation else {return}
-        let appCivico = AppCivico()
-        let url = appCivico.healthUnitsUrl(AtLatitude: baseLocation!.coordinate.latitude.description, AndLogitude: baseLocation!.coordinate.longitude.description, UnderRadius: "1000")
-        let dataTask = URLSession.shared.dataTask(with: url ) {[weak self] (data, response, error) in
-            guard let _ = self else {return}
-            if error == nil {
-                guard let _ = data else {return}
-                
-                let dataDecoder = JSONDecoder()
-                do {
-                    let newHealthUnits = try dataDecoder.decode([HealthUnit].self, from: data!)
-                    self!.healthUnits.removeAll()
-                    self!.healthUnits.append(contentsOf: newHealthUnits)
-                    self!.pulseActivityIndicator.hide()
-                    self!.plotHealthUnitsInMap()
-                }catch {
-                    print(error.localizedDescription)
-                }
-            } else {
-                print(error.debugDescription)
-                self!.getHealthUnitsAroundMe()
-            }
-        }
-        dataTask.resume()
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        Auth.auth().removeStateDidChangeListener(handle!)
     }
     
-    private func plotHealthUnitsInMap() {
-        DispatchQueue.main.async {[weak self] in
-            guard let _ = self else {return}
-            let oldAnnotations = self!.scannerMap.annotations.filter({(annotation) in return annotation.isKind(of: HealthUnitAnnotation.self)})
-            self!.scannerMap.removeAnnotations(oldAnnotations)
-            
-            for healthUnit in self!.healthUnits {
-                let annotation = HealthUnitAnnotation(with: healthUnit)
-                self!.scannerMap.addAnnotation(annotation)
-            }
-        }
-    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "healthUnitDetailSegue" {
@@ -144,33 +126,171 @@ extension ScannerMapViewController: MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        performSegue(withIdentifier: "healthUnitDetailSegue", sender: view)
+        let healUnitOptionsAlert = UIAlertController(title: "Heal Unit Options", message: "Choose the desired action", preferredStyle: .actionSheet)
+        healUnitOptionsAlert.addAction(UIAlertAction(title: "Detail", style: .default, handler: {[unowned self](action) in
+            self.performSegue(withIdentifier: "healthUnitDetailSegue", sender: view)
+        }))
+        healUnitOptionsAlert.addAction(UIAlertAction(title: "Check In", style: .default, handler: {[unowned self](action) in
+            let annotation = view.annotation as! HealthUnitAnnotation
+            let unit = annotation.healthUnit
+
+            if let context = self.containter?.viewContext {
+                do {
+                    if let patient = try Patient.find(matching: Auth.auth().currentUser!.uid, in: context) {
+                        let visit = try Visit.createOrUpdate(in: context, withPatient: patient, healthUnitId: unit.codUnidade!, regionInTime: Date(),regionOutTime: Date())
+                        visit.healthUnitName = unit.nomeFantasia
+                        visit.healthUnitDescription = unit.descricaoCompleta
+                        visit.checkedIn = true
+                        try context.save()
+                    }
+                } catch {
+                    print("Error performing manual check in: \(error.localizedDescription)")
+                }
+            }
+            
+        }))
+        healUnitOptionsAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        present(healUnitOptionsAlert, animated: true, completion: nil)
     }
     
-    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        print("*** A região mudou!!! ***")
+    private func plotHealthUnitsInMap() {
+        DispatchQueue.main.async {[weak self] in
+            guard let _ = self else {return}
+            let oldAnnotations = self!.scannerMap.annotations.filter({(annotation) in return annotation.isKind(of: HealthUnitAnnotation.self)})
+            self!.scannerMap.removeAnnotations(oldAnnotations)
+            
+            for healthUnit in self!.healthUnits {
+                let annotation = HealthUnitAnnotation(with: healthUnit)
+                self!.scannerMap.addAnnotation(annotation)
+            }
+        }
     }
 }
 
 extension ScannerMapViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let _ = Auth.auth().currentUser else {return}
+        
         if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
-            print("*** Regiões atualizadas... ***")
             baseLocation = locations.last
-            if firstUpdateUserLocation {
-                firstUpdateUserLocation = false
+            if pendingUpdateUnitsAround {
+                pendingUpdateUnitsAround = false
+                getHealthUnits(around: baseLocation!) {[unowned self](units) in
+                    self.healthUnits = units
+                    self.updateRegions(withHealthUnits: units)
+                    self.plotHealthUnitsInMap()
+                    self.pulseActivityIndicator.hide()
+                }
+
                 let scannerCamera = MKMapCamera(lookingAtCenter: baseLocation!.coordinate, fromDistance: 1000, pitch: 0, heading: 0)
                 scannerMap.setCamera(scannerCamera, animated: true)
-                scannerMap.showsUserLocation = true
                 setUserLocationCamera.isEnabled = true
-                getHealthUnitsAroundMe()
+
+                if CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) {
+                    let patientRegion = CLCircularRegion(center: baseLocation!.coordinate, radius: 100, identifier: Auth.auth().currentUser!.uid)
+                    patientRegion.notifyOnExit = true
+                    locationManager.startMonitoring(for: patientRegion)
+                }
             }
         }
     }
     
-    func locationManagerDidResumeLocationUpdates(_ manager: CLLocationManager) {
-        print("*** Vai começar a atualização!!! ***")
-        firstUpdateUserLocation = true
+    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        guard let _ = Auth.auth().currentUser else {return}
+        
+        let units = healthUnits.filter({(healthUnit) in return healthUnit.codUnidade == region.identifier})
+        if units.count > 0 {
+            let unit = units.first
+            if let context = containter?.viewContext {
+                do {
+                    if let patient = try Patient.find(matching: Auth.auth().currentUser!.uid, in: context) {
+                        let visit = try Visit.createOrUpdate(in: context, withPatient: patient, healthUnitId: unit!.codUnidade!, regionInTime: Date())
+                        visit.healthUnitName = unit!.nomeFantasia
+                        visit.healthUnitDescription = unit!.descricaoCompleta!
+                        try context.save()
+                    }
+                } catch {
+                    print("Error in LocationManagerDidEnterRegion: \(error.localizedDescription)")
+                }
+            }
+        }
     }
     
+    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+        guard let _ = Auth.auth().currentUser else {return}
+        
+        if region.identifier == Auth.auth().currentUser!.uid {
+            locationManager.stopMonitoring(for: region)
+            pendingUpdateUnitsAround = true
+            return
+        }
+        
+        if healthUnits.filter({(healthUnit) in return healthUnit.codUnidade == region.identifier}).count > 0 {
+            if let context = containter?.viewContext {
+                do {
+                    if let patient = try Patient.find(matching: Auth.auth().currentUser!.uid, in: context) {
+                        let _ = try Visit.createOrUpdate(in: context, withPatient: patient, healthUnitId: region.identifier, regionOutTime: Date())
+                        try context.save()
+                    }
+                } catch {
+                    print("Error in LocationManagerDidExitRegion: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    private func getHealthUnits(around location: CLLocation, handle completion: @escaping (_: [HealthUnit]) -> Void ) {
+        let appCivico = AppCivico()
+        let url = appCivico.healthUnitsUrl(AtLatitude: location.coordinate.latitude.description, AndLogitude: location.coordinate.longitude.description, UnderRadius: "500")
+        let dataTask = URLSession.shared.dataTask(with: url ) {[weak self] (data, response, error) in
+            guard let _ = self else {return}
+            if error == nil {
+                var units = [HealthUnit]()
+                guard let _ = data else {return}
+                
+                let dataDecoder = JSONDecoder()
+                do {
+                    let newHealthUnits = try dataDecoder.decode([HealthUnit].self, from: data!)
+                    units.append(contentsOf: newHealthUnits)
+                    completion(units)
+                }catch {
+                    print(error.localizedDescription)
+                }
+            } else {
+                print(error.debugDescription)
+                self!.getHealthUnits(around: self!.baseLocation!, handle: completion)
+            }
+        }
+        dataTask.resume()
+    }
+    
+    private func updateRegions(withHealthUnits healthUnits: [HealthUnit]) {
+        guard CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) else {return}
+        
+        for healthUnit in healthUnits {
+            let alreadyCreatedRegion = locationManager.monitoredRegions.filter({(region) in return region.identifier == healthUnit.codUnidade!})
+            guard alreadyCreatedRegion.count == 0 else {continue}
+            
+            let regionId = healthUnit.codUnidade!
+            let regionCenter = CLLocationCoordinate2DMake(healthUnit.lat!, healthUnit.long!)
+            
+            let newRegion = CLCircularRegion(center: regionCenter, radius: 20, identifier: regionId)
+            newRegion.notifyOnEntry = true
+            newRegion.notifyOnExit = true
+            locationManager.startMonitoring(for: newRegion)
+            
+            if AppDelegate.notificationGranted {
+                let notificationContent = UNMutableNotificationContent()
+                notificationContent.title = "Cnes App - Unit Health nearby"
+                notificationContent.body = "The Unit Heath \(healthUnit.nomeFantasia!) is near"
+                
+                let notificationTrigger = UNLocationNotificationTrigger(region: newRegion, repeats: false)
+                
+                let request = UNNotificationRequest(identifier: healthUnit.codUnidade!, content: notificationContent, trigger: notificationTrigger)
+                
+                let center = UNUserNotificationCenter.current()
+                center.add(request, withCompletionHandler: {(error) in if error == nil {print("add notification successfully")}})
+            }
+        }
+    }
 }

@@ -25,6 +25,7 @@
 		805140C51FF2DF74005CC96B /* Patient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805140C41FF2DF74005CC96B /* Patient.swift */; };
 		805140C71FF2E91D005CC96B /* PatientProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805140C61FF2E91D005CC96B /* PatientProfileViewController.swift */; };
 		805140C91FF2ED78005CC96B /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805140C81FF2ED78005CC96B /* EditProfileViewController.swift */; };
+		80CC00E61FF7C2D300C5C71A /* Visit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80CC00E51FF7C2D300C5C71A /* Visit.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,7 @@
 		805140C41FF2DF74005CC96B /* Patient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patient.swift; sourceTree = "<group>"; };
 		805140C61FF2E91D005CC96B /* PatientProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientProfileViewController.swift; sourceTree = "<group>"; };
 		805140C81FF2ED78005CC96B /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
+		80CC00E51FF7C2D300C5C71A /* Visit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Visit.swift; sourceTree = "<group>"; };
 		B6A01C224E2C47E9DCBB1F31 /* Pods_CnesApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CnesApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDAE2693276B57EEF8D9D584 /* Pods-CnesApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CnesApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-CnesApp/Pods-CnesApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -135,6 +137,7 @@
 			children = (
 				805140B91FE6C145005CC96B /* AppCivico.swift */,
 				805140C41FF2DF74005CC96B /* Patient.swift */,
+				80CC00E51FF7C2D300C5C71A /* Visit.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -297,6 +300,7 @@
 				800DC1831FF422F000CEF244 /* HealthUnitDetailViewController.swift in Sources */,
 				801072C71FF7222400EFA5CB /* PulseActivityIndicator.swift in Sources */,
 				805140BC1FEEAEAA005CC96B /* EmailSignUpViewController.swift in Sources */,
+				80CC00E61FF7C2D300C5C71A /* Visit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -17,6 +17,11 @@ class EditProfileViewController: UIViewController {
     var patient: Patient?
     private var container: NSPersistentContainer? = AppDelegate.persistentContainer
     private var firebaseDatabaseReference = Database.database().reference()
+    private var topConstraintConstant: CGFloat?
+    
+    @IBOutlet weak var topConstraint: NSLayoutConstraint!
+    @IBOutlet weak var fieldsStackView: UIStackView!
+    
     
     @IBOutlet weak var patientProfilePhotoImage: UIImageView! {
         didSet {
@@ -31,7 +36,6 @@ class EditProfileViewController: UIViewController {
     }
     @IBOutlet weak var patientNameText: UITextField!
     @IBOutlet weak var patientEmailText: UITextField!
-    @IBOutlet weak var patientPhoneText: UITextField!
     
     @IBAction func editProfilePhotoButton(_ sender: UIButton) {
         pickImage()
@@ -92,6 +96,7 @@ class EditProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        topConstraintConstant = topConstraint.constant
         
         if let _ = patient {
             patientEmailText.text = patient!.email
@@ -100,6 +105,16 @@ class EditProfileViewController: UIViewController {
                 patientProfilePhotoImage.image = profilePhoto
             }
         }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        startObserveKeyboardEvents()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        stopObserveKeyboardEvents()
     }
     
     @objc func editProfilePhoto(_ sender: UITapGestureRecognizer) {
@@ -128,6 +143,29 @@ class EditProfileViewController: UIViewController {
         }
         pickImageAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         present(pickImageAlert, animated: true, completion: nil)
+    }
+    
+    private func startObserveKeyboardEvents() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidAppear(_:)), name: Notification.Name.UIKeyboardWillShow, object: view.window)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidDisappear(_:)), name: Notification.Name.UIKeyboardWillHide, object: view.window)
+    }
+    
+    private func stopObserveKeyboardEvents() {
+         NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc private func keyboardDidAppear(_ notification: Notification) {
+        if let keyboardFrame = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? CGRect {
+            let delta = view.bounds.maxY - fieldsStackView.frame.maxY - keyboardFrame.size.height - 16
+            if delta < 0 {
+                topConstraint.constant = topConstraintConstant! + delta
+            }
+        }
+    }
+    
+    @objc private func keyboardDidDisappear(_ notification: Notification) {
+        topConstraint.constant = topConstraintConstant!
     }
 }
 

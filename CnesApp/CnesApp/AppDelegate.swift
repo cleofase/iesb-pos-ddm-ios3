@@ -8,18 +8,30 @@
 
 import UIKit
 import CoreData
+import CoreLocation
 import FirebaseCore
 import FirebaseAuth
+import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    
+    private var containter: NSPersistentContainer? = AppDelegate.persistentContainer
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
         
+        let center = UNUserNotificationCenter.current()
+        center.delegate = self
+        center.requestAuthorization(options: [.alert, .sound]) {(granted, error) in
+            if let _ = error {return}
+            if granted {
+                AppDelegate.notificationGranted = true
+            }
+        }
+
         if let _ = Auth.auth().currentUser {
             let mainStoryBorad = UIStoryboard(name: "Main", bundle: nil)
             let initialLogedViewController = mainStoryBorad.instantiateViewController(withIdentifier: "mainLogedTabBarController")
@@ -107,5 +119,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     static var viewContext: NSManagedObjectContext? {
         return persistentContainer?.viewContext
     }
+    
+    static var notificationGranted: Bool = false
+
 }
 
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        print("*** Notification Will Present ***")
+        completionHandler(UNNotificationPresentationOptions.sound)
+    }
+}

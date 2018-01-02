@@ -5,9 +5,20 @@
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="patientId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="profilePicture" optional="YES" attributeType="Binary" syncable="YES"/>
-        <attribute name="userName" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="visits" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Visit" inverseName="patient" inverseEntity="Visit" syncable="YES"/>
+    </entity>
+    <entity name="Visit" representedClassName=".Visit" syncable="YES" codeGenerationType="category">
+        <attribute name="checkedIn" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="healthUnitDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="healthUnitId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="healthUnitName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="opened" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="regionInTime" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="regionOutTime" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="patient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Patient" inverseName="visits" inverseEntity="Patient" syncable="YES"/>
     </entity>
     <elements>
         <element name="Patient" positionX="-63" positionY="-18" width="128" height="118"/>
+        <element name="Visit" positionX="198" positionY="-15" width="128" height="163"/>
     </elements>
 </model>
